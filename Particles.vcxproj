@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="klib\apis\apis.cpp" />
+    <ClCompile Include="klib\apis\cpp\kl_cpp.cpp" />
+    <ClCompile Include="klib\apis\windows\kl_directx.cpp" />
+    <ClCompile Include="klib\apis\windows\kl_windows.cpp" />
+    <ClCompile Include="klib\graphics\context_holder\context_holder.cpp" />
+    <ClCompile Include="klib\graphics\device_holder\device_holder.cpp" />
+    <ClCompile Include="klib\graphics\gpu\gpu.cpp" />
+    <ClCompile Include="klib\graphics\graphics.cpp" />
+    <ClCompile Include="klib\graphics\shaders\compiled_shader.cpp" />
+    <ClCompile Include="klib\graphics\shaders\render_shaders.cpp" />
+    <ClCompile Include="klib\graphics\shaders\shader_compiler.cpp" />
+    <ClCompile Include="klib\math\helper\constants.cpp" />
+    <ClCompile Include="klib\math\math.cpp" />
+    <ClCompile Include="klib\math\matrix\float2x2.cpp" />
+    <ClCompile Include="klib\math\matrix\float3x3.cpp" />
+    <ClCompile Include="klib\math\matrix\float4x4.cpp" />
+    <ClCompile Include="klib\math\ray\plane.cpp" />
+    <ClCompile Include="klib\math\ray\ray.cpp" />
+    <ClCompile Include="klib\math\ray\sphere.cpp" />
+    <ClCompile Include="klib\math\triangle\triangle.cpp" />
+    <ClCompile Include="klib\math\triangle\vertex.cpp" />
+    <ClCompile Include="klib\math\vector\float2.cpp" />
+    <ClCompile Include="klib\math\vector\float3.cpp" />
+    <ClCompile Include="klib\math\vector\float4.cpp" />
+    <ClCompile Include="klib\math\vector\int2.cpp" />
+    <ClCompile Include="klib\media\audio\audio.cpp" />
+    <ClCompile Include="klib\media\image\color.cpp" />
+    <ClCompile Include="klib\media\image\image.cpp" />
+    <ClCompile Include="klib\media\media.cpp" />
+    <ClCompile Include="klib\media\video\video_reader.cpp" />
+    <ClCompile Include="klib\media\video\video_writer.cpp" />
+    <ClCompile Include="klib\memory\files\file.cpp" />
+    <ClCompile Include="klib\memory\linking\dll.cpp" />
+    <ClCompile Include="klib\memory\memory.cpp" />
+    <ClCompile Include="klib\memory\reference\ref.cpp" />
+    <ClCompile Include="klib\render\entity\collider.cpp" />
+    <ClCompile Include="klib\render\entity\entity.cpp" />
+    <ClCompile Include="klib\render\entity\material.cpp" />
+    <ClCompile Include="klib\render\entity\mesh.cpp" />
+    <ClCompile Include="klib\render\light\ambient_light.cpp" />
+    <ClCompile Include="klib\render\light\directional_light.cpp" />
+    <ClCompile Include="klib\render\render.cpp" />
+    <ClCompile Include="klib\render\scene\camera.cpp" />
+    <ClCompile Include="klib\render\scene\scene.cpp" />
+    <ClCompile Include="klib\time\date\date.cpp" />
+    <ClCompile Include="klib\time\time.cpp" />
+    <ClCompile Include="klib\time\timer\timer.cpp" />
+    <ClCompile Include="klib\utility\async\async.cpp" />
+    <ClCompile Include="klib\utility\data\encryptor.cpp" />
+    <ClCompile Include="klib\utility\data\random.cpp" />
+    <ClCompile Include="klib\utility\format\console.cpp" />
+    <ClCompile Include="klib\utility\format\strings.cpp" />
+    <ClCompile Include="klib\utility\utility.cpp" />
+    <ClCompile Include="klib\web\socket\socket.cpp" />
+    <ClCompile Include="klib\web\web.cpp" />
+    <ClCompile Include="klib\window\draw\frame_buffer.cpp" />
+    <ClCompile Include="klib\window\input\key.cpp" />
+    <ClCompile Include="klib\window\input\keyboard.cpp" />
+    <ClCompile Include="klib\window\input\mouse.cpp" />
+    <ClCompile Include="klib\window\window.cpp" />
+    <ClCompile Include="source\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="klib\apis\apis.h" />
+    <ClInclude Include="klib\apis\cpp\kl_cpp.h" />
+    <ClInclude Include="klib\apis\windows\kl_directx.h" />
+    <ClInclude Include="klib\apis\windows\kl_windows.h" />
+    <ClInclude Include="klib\graphics\context_holder\context_holder.h" />
+    <ClInclude Include="klib\graphics\device_holder\device_holder.h" />
+    <ClInclude Include="klib\graphics\gpu\gpu.h" />
+    <ClInclude Include="klib\graphics\graphics.h" />
+    <ClInclude Include="klib\graphics\shaders\compiled_shader.h" />
+    <ClInclude Include="klib\graphics\shaders\render_shaders.h" />
+    <ClInclude Include="klib\graphics\shaders\shader_compiler.h" />
+    <ClInclude Include="klib\klib.h" />
+    <ClInclude Include="klib\math\helper\constants.h" />
+    <ClInclude Include="klib\math\math.h" />
+    <ClInclude Include="klib\math\matrix\float2x2.h" />
+    <ClInclude Include="klib\math\matrix\float3x3.h" />
+    <ClInclude Include="klib\math\matrix\float4x4.h" />
+    <ClInclude Include="klib\math\ray\plane.h" />
+    <ClInclude Include="klib\math\ray\ray.h" />
+    <ClInclude Include="klib\math\ray\sphere.h" />
+    <ClInclude Include="klib\math\triangle\triangle.h" />
+    <ClInclude Include="klib\math\triangle\vertex.h" />
+    <ClInclude Include="klib\math\vector\float2.h" />
+    <ClInclude Include="klib\math\vector\float3.h" />
+    <ClInclude Include="klib\math\vector\float4.h" />
+    <ClInclude Include="klib\math\vector\int2.h" />
+    <ClInclude Include="klib\media\audio\audio.h" />
+    <ClInclude Include="klib\media\image\color.h" />
+    <ClInclude Include="klib\media\image\image.h" />
+    <ClInclude Include="klib\media\media.h" />
+    <ClInclude Include="klib\media\video\video_reader.h" />
+    <ClInclude Include="klib\media\video\video_writer.h" />
+    <ClInclude Include="klib\memory\files\file.h" />
+    <ClInclude Include="klib\memory\linking\dll.h" />
+    <ClInclude Include="klib\memory\memory.h" />
+    <ClInclude Include="klib\memory\reference\ref.h" />
+    <ClInclude Include="klib\render\entity\collider.h" />
+    <ClInclude Include="klib\render\entity\entity.h" />
+    <ClInclude Include="klib\render\entity\material.h" />
+    <ClInclude Include="klib\render\entity\mesh.h" />
+    <ClInclude Include="klib\render\light\ambient_light.h" />
+    <ClInclude Include="klib\render\light\directional_light.h" />
+    <ClInclude Include="klib\render\render.h" />
+    <ClInclude Include="klib\render\scene\camera.h" />
+    <ClInclude Include="klib\render\scene\scene.h" />
+    <ClInclude Include="klib\time\date\date.h" />
+    <ClInclude Include="klib\time\time.h" />
+    <ClInclude Include="klib\time\timer\timer.h" />
+    <ClInclude Include="klib\utility\async\async.h" />
+    <ClInclude Include="klib\utility\data\encryptor.h" />
+    <ClInclude Include="klib\utility\data\random.h" />
+    <ClInclude Include="klib\utility\format\console.h" />
+    <ClInclude Include="klib\utility\format\strings.h" />
+    <ClInclude Include="klib\utility\utility.h" />
+    <ClInclude Include="klib\web\socket\socket.h" />
+    <ClInclude Include="klib\web\web.h" />
+    <ClInclude Include="klib\window\draw\frame_buffer.h" />
+    <ClInclude Include="klib\window\input\key.h" />
+    <ClInclude Include="klib\window\input\keyboard.h" />
+    <ClInclude Include="klib\window\input\mouse.h" />
+    <ClInclude Include="klib\window\window.h" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{222aafa2-7aa1-464a-8983-1d9967f627ab}</ProjectGuid>
+    <RootNamespace>Particles</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)source\;$(SolutionDir)klib\;C:\VulkanSDK\1.3.239.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)source\;$(SolutionDir)klib\;C:\VulkanSDK\1.3.239.0\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
