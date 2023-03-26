@@ -1,5 +1,5 @@
 ## About
-3D particle simulation using DirectX.  
+3D particle simulation using DirectX  
 Supports MODEL loading *(.obj files)*  
 Supports TEXTURE loading *(any image file)*
 
