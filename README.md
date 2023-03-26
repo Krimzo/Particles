@@ -4,13 +4,13 @@ Supports MODEL loading *(.obj files)*
 Supports TEXTURE loading *(any image file)*
 
 # Default cube
-![](screenshots/default_cube.png)
+![](screens/default_cube.png)
 
 # Loaded model (SOLID)
-![](screenshots/loaded_model.png)
+![](screens/loaded_model.png)
 
 # Loaded model (WIREFRAME)
-![](screenshots/loaded_model_wireframe.png)
+![](screen/loaded_model_wireframe.png)
 
 # Exploded model
-![](screenshots/exploded_model.png)
+![](screens/exploded_model.png)
