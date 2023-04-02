@@ -24,9 +24,9 @@ void state::compute_physics()
 
 	if (window.mouse.left && !is_window_hovered) {
 		const kl::float2 ndc = window.mouse.get_normalized_position();
-		const kl::ray ray = { camera.origin, kl::math::inverse(camera.matrix()), ndc };
+		const kl::ray ray = { camera.origin, kl::inverse(camera.matrix()), ndc };
 		cs_data.force_ray_origin = { ray.origin, 1.0f };
-		cs_data.force_ray_direction = { ray.direction, 0.0f };
+		cs_data.force_ray_direction = { ray.get_direction(), 0.0f };
 	}
 
 	cs_data.force_ray_direction.w = (float) return_home;

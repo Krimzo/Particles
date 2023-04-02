@@ -22,7 +22,7 @@ void state::generate_particle_line(const kl::triangle& triangle, const kl::float
 {
 	const float walk_distance = (end - start).length();
 	const int step_count = (int) (walk_distance / generation_precision);
-	const kl::float3 walk_direction = kl::math::normalize(end - start);
+	const kl::float3 walk_direction = kl::normalize(end - start);
 
 	for (int i = 0; i <= step_count; i++) {
 		particle particle = {};
@@ -79,8 +79,8 @@ void state::generate_particles()
 			const int b_step_count = (int) (b_walk_distance / generation_precision);
 			const int step_count = min(a_step_count, b_step_count);
 
-			const kl::float3 a_walk_direction = kl::math::normalize(triangle.c.world - triangle.a.world);
-			const kl::float3 b_walk_direction = kl::math::normalize(triangle.c.world - triangle.b.world);
+			const kl::float3 a_walk_direction = kl::normalize(triangle.c.world - triangle.a.world);
+			const kl::float3 b_walk_direction = kl::normalize(triangle.c.world - triangle.b.world);
 
 			for (int i = 0; i <= step_count; i++) {
 				const kl::float3 a_walk_point = triangle.a.world + a_walk_direction * (i * generation_precision);

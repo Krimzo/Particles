@@ -25,6 +25,8 @@
     <ClCompile Include="imgui\ImSequencer.cpp" />
     <ClCompile Include="klib\apis\apis.cpp" />
     <ClCompile Include="klib\apis\cpp\kl_cpp.cpp" />
+    <ClCompile Include="klib\apis\external\kl_imgui.cpp" />
+    <ClCompile Include="klib\apis\external\kl_physx.cpp" />
     <ClCompile Include="klib\apis\windows\kl_directx.cpp" />
     <ClCompile Include="klib\apis\windows\kl_windows.cpp" />
     <ClCompile Include="klib\graphics\context_holder\context_holder.cpp" />
@@ -58,14 +60,16 @@
     <ClCompile Include="klib\memory\linking\dll.cpp" />
     <ClCompile Include="klib\memory\memory.cpp" />
     <ClCompile Include="klib\memory\reference\ref.cpp" />
-    <ClCompile Include="klib\render\entity\collider.cpp" />
-    <ClCompile Include="klib\render\entity\entity.cpp" />
-    <ClCompile Include="klib\render\entity\material.cpp" />
-    <ClCompile Include="klib\render\entity\mesh.cpp" />
+    <ClCompile Include="klib\render\components\collider.cpp" />
+    <ClCompile Include="klib\render\components\material.cpp" />
+    <ClCompile Include="klib\render\components\mesh.cpp" />
+    <ClCompile Include="klib\render\components\texture.cpp" />
     <ClCompile Include="klib\render\light\ambient_light.cpp" />
     <ClCompile Include="klib\render\light\directional_light.cpp" />
+    <ClCompile Include="klib\render\light\point_light.cpp" />
     <ClCompile Include="klib\render\render.cpp" />
     <ClCompile Include="klib\render\scene\camera.cpp" />
+    <ClCompile Include="klib\render\scene\entity.cpp" />
     <ClCompile Include="klib\render\scene\scene.cpp" />
     <ClCompile Include="klib\time\date\date.cpp" />
     <ClCompile Include="klib\time\time.cpp" />
@@ -107,6 +111,8 @@
     <ClInclude Include="imgui\ImZoomSlider.h" />
     <ClInclude Include="klib\apis\apis.h" />
     <ClInclude Include="klib\apis\cpp\kl_cpp.h" />
+    <ClInclude Include="klib\apis\external\kl_imgui.h" />
+    <ClInclude Include="klib\apis\external\kl_physx.h" />
     <ClInclude Include="klib\apis\windows\kl_directx.h" />
     <ClInclude Include="klib\apis\windows\kl_windows.h" />
     <ClInclude Include="klib\graphics\context_holder\context_holder.h" />
@@ -141,14 +147,16 @@
     <ClInclude Include="klib\memory\linking\dll.h" />
     <ClInclude Include="klib\memory\memory.h" />
     <ClInclude Include="klib\memory\reference\ref.h" />
-    <ClInclude Include="klib\render\entity\collider.h" />
-    <ClInclude Include="klib\render\entity\entity.h" />
-    <ClInclude Include="klib\render\entity\material.h" />
-    <ClInclude Include="klib\render\entity\mesh.h" />
+    <ClInclude Include="klib\render\components\collider.h" />
+    <ClInclude Include="klib\render\components\material.h" />
+    <ClInclude Include="klib\render\components\mesh.h" />
+    <ClInclude Include="klib\render\components\texture.h" />
     <ClInclude Include="klib\render\light\ambient_light.h" />
     <ClInclude Include="klib\render\light\directional_light.h" />
+    <ClInclude Include="klib\render\light\point_light.h" />
     <ClInclude Include="klib\render\render.h" />
     <ClInclude Include="klib\render\scene\camera.h" />
+    <ClInclude Include="klib\render\scene\entity.h" />
     <ClInclude Include="klib\render\scene\scene.h" />
     <ClInclude Include="klib\time\date\date.h" />
     <ClInclude Include="klib\time\time.h" />
@@ -166,8 +174,8 @@
     <ClInclude Include="klib\window\input\keyboard.h" />
     <ClInclude Include="klib\window\input\mouse.h" />
     <ClInclude Include="klib\window\window.h" />
-    <ClInclude Include="source\types.h" />
     <ClInclude Include="source\state.h" />
+    <ClInclude Include="source\types.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
