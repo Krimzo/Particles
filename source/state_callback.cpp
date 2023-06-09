@@ -12,7 +12,7 @@ void state::on_window_resize(const kl::int2 new_size)
 
 void state::reload_camera()
 {
-	camera.set_forward(camera.origin * -1.0f);
+	camera.set_forward(-camera.origin);
 	camera.origin = (camera.get_forward() * -camera.speed);
 }
 
@@ -33,8 +33,8 @@ void state::on_camera_update()
 	start_rotations = total_rotations;
 
 	camera.origin.x = sin(total_rotations.x);
-	camera.origin.z = cos(total_rotations.x);
 	camera.origin.y = tan(total_rotations.y);
+    camera.origin.z = cos(total_rotations.x);
 
 	reload_camera();
 }

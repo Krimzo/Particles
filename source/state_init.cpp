@@ -22,11 +22,11 @@ void state::create_render_shaders()
 void state::setup_gui()
 {
     ImGui::CreateContext();
-    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    ImGui::StyleColorsDark();
-
     ImGui_ImplWin32_Init(window);
     ImGui_ImplDX11_Init(gpu.device().Get(), gpu.context().Get());
+
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    ImGui::StyleColorsDark();
 
     ImGuiStyle& style = ImGui::GetStyle();
 
