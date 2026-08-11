@@ -5,13 +5,13 @@ Supports TEXTURE loading *(any image file)*
 
 ## Screenshots
 ### Default cube
-![](screens/default_cube.png)
+![](screens/screen1.png)
 
 ### Loaded model (SOLID)
-![](screens/loaded_model.png)
+![](screens/screen2.png)
 
 ### Loaded model (WIREFRAME)
-![](screens/loaded_model_wireframe.png)
+![](screens/screen3.png)
 
 ### Exploded model
-![](screens/exploded_model.png)
+![](screens/screen4.png)

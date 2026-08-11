@@ -1,10 +1,9 @@
-#include "state.h"
+#include "particles.h"
 
 
 int main()
 {
-	state state = {};
-	while (state.process()) {
-		state.on_update();
-	}
+    Particles particles{};
+    while ( particles.process() );
+    return 0;
 }
