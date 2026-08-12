@@ -142,8 +142,10 @@ void Particles::setup_ui_colors()
 void Particles::update_camera()
 {
     static constexpr float VERTICAL_LIMIT = 85.0f;
+    static constexpr float ZOOM_LIMIT = 1.0f;
 
     camera.speed -= window.mouse.scroll();
+    camera.speed = kl::max( camera.speed, ZOOM_LIMIT );
 
     if ( window.mouse.right.pressed() )
     {
@@ -174,28 +176,34 @@ void Particles::compute_physics()
 {
     struct alignas( 16 ) CB
     {
+        kl::Float3 FORCE_RAY_ORIGIN;
+        float USE_RAY_FORCE;
+        kl::Float3 FORCE_RAY_DIRECTION;
+        float FORCE_STRENGTH;
+        kl::Float3 CONTAINER_SCALE;
+        float RETURN_HOME;
+        float ENERGY_RETAIN;
+        float ELAPSED_TIME;
+        float DELTA_TIME;
         UINT PARTICLE_COUNT;
-        kl::Float3 TIME_INFO;           // (elapsed_t, delta_t, none)
-        kl::Float4 FORCE_RAY_ORIGIN;    // (origin, use_force?)
-        kl::Float4 FORCE_RAY_DIRECTION; // (direction, return_home?)
-        kl::Float4 CONTAINER_SCALE;     // (scale, none)
-        kl::Float4 ENERGY_INFO;         // (force_strength, energy_retain, none, none)
     } cb = {};
 
     cb.PARTICLE_COUNT = gpu.vertex_buffer_size( particle_buffer, sizeof( Particle ) );
-    cb.TIME_INFO = { timer.elapsed(), timer.delta(), 0.0f };
+    cb.ELAPSED_TIME = timer.elapsed();
+    cb.DELTA_TIME = timer.delta();
+    cb.RETURN_HOME = (float) return_home;
+    cb.CONTAINER_SCALE = container_scale;
+    cb.FORCE_STRENGTH = force_strength;
+    cb.ENERGY_RETAIN = energy_retain;
 
-    if ( window.mouse.left && !is_window_hovered )
+    if ( window.mouse.left && !is_ui_hovered )
     {
         const kl::Float2 ndc = window.mouse.ndc_pos();
         const kl::Ray ray = { camera.position, kl::inverse( camera.matrix() ), ndc };
-        cb.FORCE_RAY_ORIGIN = { ray.origin, 1.0f };
-        cb.FORCE_RAY_DIRECTION = { ray.direction(), 0.0f };
+        cb.FORCE_RAY_ORIGIN = ray.origin;
+        cb.FORCE_RAY_DIRECTION = ray.direction();
+        cb.USE_RAY_FORCE = 1.0f;
     }
-
-    cb.FORCE_RAY_DIRECTION.w = (float) return_home;
-    cb.CONTAINER_SCALE = { container_scale, 0.0f };
-    cb.ENERGY_INFO = { force_strength, energy_retain, 0.0f, 0.0f };
 
     gpu.bind_compute_shader( compute_shader.shader );
     compute_shader.upload( cb );
@@ -229,7 +237,7 @@ void Particles::render_ui()
 
     if ( imgui::Begin( "Scene" ) )
     {
-        is_window_hovered = imgui::GetIO().WantCaptureMouse;
+        is_ui_hovered = imgui::GetIO().WantCaptureMouse;
 
         // Mesh
         imgui::Text( "Mesh" );

@@ -57,8 +57,8 @@ struct Particles
     float energy_retain = 0.7f;
     bool return_home = false;
 
-    // GUI
-    bool is_window_hovered = false;
+    // UI
+    bool is_ui_hovered = false;
 
     Particles();
     ~Particles() noexcept;
