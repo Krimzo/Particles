@@ -11,6 +11,14 @@ struct Particle
     kl::Float3 color;
 };
 
+enum struct ColorType
+{
+    SINGLE,
+    POSITION,
+    RANDOM,
+    RANDOM_GRAYSCALE,
+};
+
 struct Particles
 {
     // System
@@ -42,7 +50,7 @@ struct Particles
     kl::Shaders shaders;
     kl::ComputeShader compute_shader;
 
-    // Camera movement
+    // Camera Movement
     kl::Float2 camera_rotations;
     kl::Float2 start_camera_rotations;
     kl::Int2 start_mouse_position;
@@ -53,10 +61,16 @@ struct Particles
     bool return_home = false;
     float return_home_velocity = 0.5f;
 
-    // Particle generation
+    // Particle Box
     int box_particle_count = 1'000'000;
+    float box_particle_velocity_limit = 0.1f;
+    ColorType box_particle_color_type = ColorType::POSITION;
+    kl::Float3 box_particle_color_single = kl::colors::WHITE;
+
+    // Particle Mesh
     float generation_precision = 0.005f;
     bool use_wireframe = false;
+    bool use_texture = true;
     bool generate_exploded = false;
 
     // UI
@@ -84,4 +98,5 @@ private:
     void generate_particle_mesh();
 
     void generate_particle_line( kl::Triangle const& triangle, kl::Float3 const& start, kl::Float3 const& end );
+    void generate_particle_color( Particle& particle ) const;
 };

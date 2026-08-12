@@ -289,6 +289,24 @@ void Particles::render_ui()
         imgui::Text( kl::format( "CPU Particle Count: ", cpu_size, " [", cpu_size * sizeof( Particle ) * 1e-6, " MB]" ).c_str() );
         imgui::Text( kl::format( "GPU Particle Count: ", gpu_size, " [", gpu_size * sizeof( Particle ) * 1e-6, " MB]" ).c_str() );
         imgui::DragInt( "Box Particle Count", &box_particle_count );
+        imgui::DragFloat( "Box Particle Velocity Limit", &box_particle_velocity_limit, 0.01f, 0.0f, 1e6f );
+        bool box_color_type = box_particle_color_type == ColorType::SINGLE;
+        if ( imgui::Checkbox( "Single##ColorType", &box_color_type ) )
+            box_particle_color_type = ColorType::SINGLE;
+        imgui::SameLine();
+        box_color_type = box_particle_color_type == ColorType::POSITION;
+        if ( imgui::Checkbox( "Position##ColorType", &box_color_type ) )
+            box_particle_color_type = ColorType::POSITION;
+        imgui::SameLine();
+        box_color_type = box_particle_color_type == ColorType::RANDOM;
+        if ( imgui::Checkbox( "Random##ColorType", &box_color_type ) )
+            box_particle_color_type = ColorType::RANDOM;
+        imgui::SameLine();
+        box_color_type = box_particle_color_type == ColorType::RANDOM_GRAYSCALE;
+        if ( imgui::Checkbox( "Random Grayscale##ColorType", &box_color_type ) )
+            box_particle_color_type = ColorType::RANDOM_GRAYSCALE;
+        if ( box_particle_color_type == ColorType::SINGLE )
+            imgui::ColorEdit3( "Box Particle Color Single", &box_particle_color_single.x, ImGuiColorEditFlags_NoInputs );
         if ( imgui::Button( "Generate Box Particles" ) )
         {
             generate_particle_box();
@@ -301,10 +319,22 @@ void Particles::render_ui()
         imgui::Text( kl::format( "Mesh Triangle Count: ", triangle_count, " [", triangle_count * sizeof( kl::Triangle ) * 1e-6, " MB]" ).c_str() );
         const size_t image_size = (size_t) selected_texture.width() * selected_texture.height();
         imgui::Text( kl::format( "Texture Resolution: ", selected_texture.size(), " [", image_size * sizeof( kl::RGB ) * 1e-6, " MB]" ).c_str() );
+        if ( !selected_mesh_path.empty() )
+        {
+            if ( imgui::Button( "Erase##SelectedMeshPath" ) )
+                selected_mesh_path.erase();
+            imgui::SameLine();
+        }
         if ( imgui::Button( kl::format( "Selected Mesh Path: ", selected_mesh_path, "##SelectedMeshPath" ).c_str() ) )
         {
             if ( auto opt_file = kl::choose_file( false, { { "Mesh Files", ".obj" } } ) )
                 selected_mesh_path = *opt_file;
+        }
+        if ( !selected_texture_path.empty() )
+        {
+            if ( imgui::Button( "Erase##SelectedTexturePath" ) )
+                selected_texture_path.erase();
+            imgui::SameLine();
         }
         if ( imgui::Button( kl::format( "Selected Texture Path", selected_texture_path, "##SelectedTexturePath" ).c_str() ) )
         {
@@ -318,12 +348,14 @@ void Particles::render_ui()
         imgui::DragFloat3( "Mesh Offset", &selected_mesh_offset.x, 0.01f, -1e6f, 1e6f );
         imgui::DragFloat( "Generation Precision", &generation_precision, 0.0001f, 0.0001f, 1e6f, "%.4f" );
         imgui::Checkbox( "Generate As Wireframe", &use_wireframe );
+        imgui::Checkbox( "Use Texture", &use_texture );
         imgui::Checkbox( "Generate Exploded", &generate_exploded );
         imgui::BeginDisabled( selected_mesh_path.empty() );
         if ( imgui::Button( "Generate Mesh Particles" ) )
         {
             reload_selected_mesh();
-            reload_selected_texture();
+            if ( use_texture )
+                reload_selected_texture();
             generate_particle_mesh();
             reload_particle_buffer();
         }
@@ -396,16 +428,14 @@ void Particles::reload_container_mesh()
 void Particles::generate_particle_box()
 {
     particles.resize( box_particle_count );
-    std::for_each( std::execution::par, particles.begin(), particles.end(), [&]( auto& particle )
+    std::for_each( std::execution::par, particles.begin(), particles.end(), [&]( Particle& particle )
         {
             particle.home.x = kl::random::gen_float( -container_scale.x, container_scale.x );
             particle.home.y = kl::random::gen_float( -container_scale.y, container_scale.y );
             particle.home.z = kl::random::gen_float( -container_scale.z, container_scale.z );
             particle.position = particle.home;
-            particle.velocity = kl::random::gen_float3( -0.1f, 0.1f );
-            particle.color.x = ( particle.home.x + container_scale.x ) / ( 2 * container_scale.x );
-            particle.color.y = ( particle.home.y + container_scale.y ) / ( 2 * container_scale.y );
-            particle.color.z = ( particle.home.z + container_scale.z ) / ( 2 * container_scale.z );
+            particle.velocity = kl::random::gen_float3( -box_particle_velocity_limit, box_particle_velocity_limit );
+            generate_particle_color( particle );
         } );
 }
 
@@ -465,6 +495,37 @@ void Particles::generate_particle_line( kl::Triangle const& triangle, kl::Float3
         const kl::Float3 weights = triangle.weights( particle.position );
         const float u = kl::Triangle::interpolate( weights, { triangle.a.uv.x, triangle.b.uv.x, triangle.c.uv.x } );
         const float v = kl::Triangle::interpolate( weights, { triangle.a.uv.y, triangle.b.uv.y, triangle.c.uv.y } );
-        particle.color = selected_texture.sample( { u, 1 - v } );
+        if ( use_texture )
+            particle.color = selected_texture.sample( { u, 1 - v } );
+        else
+            generate_particle_color( particle );
+    }
+}
+
+void Particles::generate_particle_color( Particle& particle ) const
+{
+    switch ( box_particle_color_type )
+    {
+    default:
+        particle.color = {};
+        break;
+
+    case ColorType::SINGLE:
+        particle.color = box_particle_color_single;
+        break;
+
+    case ColorType::POSITION:
+        particle.color.x = ( particle.home.x + container_scale.x ) / ( 2 * container_scale.x );
+        particle.color.y = ( particle.home.y + container_scale.y ) / ( 2 * container_scale.y );
+        particle.color.z = ( particle.home.z + container_scale.z ) / ( 2 * container_scale.z );
+        break;
+
+    case ColorType::RANDOM:
+        particle.color = kl::random::gen_rgb( false );
+        break;
+
+    case ColorType::RANDOM_GRAYSCALE:
+        particle.color = kl::random::gen_rgb( true );
+        break;
     }
 }
