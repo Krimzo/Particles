@@ -557,7 +557,7 @@ void drag_int( std::string_view const& text, int& value, std::function<void()> c
     imgui::SetCursorPosY( imgui::GetCursorPosY() - style.FramePadding.y );
     imgui::SetNextItemWidth( width );
     imgui::PushStyleColor( ImGuiCol_Text, I_COLOR );
-    if ( imgui::DragInt( kl::format( "##", text, "I" ).c_str(), &value, 0.01f ) )
+    if ( imgui::DragInt( kl::format( "##", text, "I" ).c_str(), &value ) )
         callback();
 
     imgui::PopStyleColor( 1 );
