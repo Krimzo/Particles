@@ -405,13 +405,13 @@ void Particles::reload_container_mesh()
 {
     const std::vector<Particle> particles = {
         { {}, { -container_scale.x, -container_scale.y, -container_scale.z }, {}, camera.background },
-        { {}, { container_scale.x, -container_scale.y, -container_scale.z }, {}, kl::RGB( camera.background.r, 0, 0 ).inverted() },
+        { {}, { container_scale.x, -container_scale.y, -container_scale.z }, {}, kl::RGB{ 200, 100, 100 } },
 
         { {}, { -container_scale.x, -container_scale.y, -container_scale.z }, {}, camera.background },
-        { {}, { -container_scale.x, container_scale.y, -container_scale.z }, {}, kl::RGB( 0, camera.background.g, 0 ).inverted() },
+        { {}, { -container_scale.x, container_scale.y, -container_scale.z }, {}, kl::RGB{ 100, 200, 100 } },
 
         { {}, { -container_scale.x, -container_scale.y, -container_scale.z }, {}, camera.background },
-        { {}, { -container_scale.x, -container_scale.y, container_scale.z }, {}, kl::RGB( 0, 0, camera.background.b ).inverted() },
+        { {}, { -container_scale.x, -container_scale.y, container_scale.z }, {}, kl::RGB{ 100, 100, 200 } },
     };
 
     kl::dx::BufferDescriptor descriptor{};
