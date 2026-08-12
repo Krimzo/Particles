@@ -6,7 +6,7 @@ struct Particle
     float3 color;
 };
 
-static const float AT_HOME_BIAS = 1e-3f;
+static const float AT_HOME_BIAS = 0.01f;
 
 float3 FORCE_RAY_ORIGIN;
 float USE_RAY_FORCE;
@@ -32,9 +32,13 @@ void c_shader(uint3 thread_id : SV_DispatchThreadID)
     
     if (RETURN_HOME)
     {
-        particle.velocity = normalize(particle.home - particle.position) * RETURN_HOME_VELOCITY;
         if (distance(particle.position, particle.home) <= AT_HOME_BIAS)
+        {
+            particle.position = particle.home;
             particle.velocity = 0.0f;
+        }
+        else
+            particle.velocity = normalize(particle.home - particle.position) * RETURN_HOME_VELOCITY;
     }
     
     if (USE_RAY_FORCE)
