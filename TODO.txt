@@ -1,3 +1,2 @@
-container scale, mesh scaling, mesh offset should be red green blue
-add keybinds for common functions like return home etc.
+improve return to home shader logic
 add new screenshots

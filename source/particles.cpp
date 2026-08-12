@@ -1,5 +1,10 @@
 #include "particles.h"
 
+static const ImU32 I_COLOR = (ImU32) ImColor( 100, 200, 200 );
+static const ImU32 F_COLOR = (ImU32) ImColor( 200, 200, 100 );
+static const ImU32 X_COLOR = (ImU32) ImColor( 200, 100, 100 );
+static const ImU32 Y_COLOR = (ImU32) ImColor( 100, 200, 100 );
+static const ImU32 Z_COLOR = (ImU32) ImColor( 100, 100, 200 );
 
 Particles::Particles()
 {
@@ -45,6 +50,7 @@ Particles::~Particles()
 bool Particles::process()
 {
     timer.update();
+    handle_keybinds();
     update_camera();
     gpu.clear_internal( camera.background );
     compute_physics();
@@ -156,6 +162,18 @@ void Particles::load_theme()
     style.TabRounding = 4;
 }
 
+void Particles::handle_keybinds()
+{
+    if ( window.keyboard.esc.pressed() )
+        window.close();
+
+    if ( window.keyboard.f11.pressed() )
+        gpu.set_fullscreen( !gpu.fullscreened() );
+
+    if ( window.keyboard.r.pressed() )
+        return_home = !return_home;
+}
+
 void Particles::update_camera()
 {
     static constexpr float VERTICAL_LIMIT = 85.0f;
@@ -250,11 +268,6 @@ void Particles::render_particles()
 
 void Particles::render_ui()
 {
-    if ( window.keyboard.esc.pressed() )
-        window.close();
-    if ( window.keyboard.f11.pressed() )
-        gpu.set_fullscreen( !gpu.fullscreened() );
-
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     imgui::NewFrame();
@@ -275,11 +288,10 @@ void Particles::render_ui()
 
         imgui::Separator();
 
-        if ( imgui::DragFloat3( "Container Scale", &container_scale.x, 0.01f, 0.0f, 1e6f ) )
-            reload_container_mesh();
-        imgui::DragFloat( "Force Strength", &force_strength, 0.01f );
-        imgui::DragFloat( "Energy Retain", &energy_retain, 0.01f, 0.0f, 1.0f );
-        imgui::DragFloat( "Return Home Velocity", &return_home_velocity, 0.01f, 0.0f, 100.0f );
+        drag_float3( "Container Scale", container_scale, std::bind( &Particles::reload_container_mesh, this ) );
+        drag_float( "Force Strength", force_strength, [] {} );
+        drag_float( "Energy Retain", energy_retain, [] {} );
+        drag_float( "Return Home Velocity", return_home_velocity, [] {} );
         imgui::Checkbox( "Return Home", &return_home );
 
         imgui::Separator();
@@ -288,8 +300,8 @@ void Particles::render_ui()
         const UINT gpu_size = gpu.vertex_buffer_size( particle_buffer, sizeof( Particle ) );
         imgui::Text( kl::format( "CPU Particle Count: ", cpu_size, " [", cpu_size * sizeof( Particle ) * 1e-6, " MB]" ).c_str() );
         imgui::Text( kl::format( "GPU Particle Count: ", gpu_size, " [", gpu_size * sizeof( Particle ) * 1e-6, " MB]" ).c_str() );
-        imgui::DragInt( "Box Particle Count", &box_particle_count );
-        imgui::DragFloat( "Box Particle Velocity Limit", &box_particle_velocity_limit, 0.01f, 0.0f, 1e6f );
+        drag_int( "Box Particle Count", box_particle_count, [] {} );
+        drag_float( "Box Particle Velocity Limit", box_particle_velocity_limit, [] {} );
         bool box_color_type = box_particle_color_type == ColorType::SINGLE;
         if ( imgui::Checkbox( "Single##ColorType", &box_color_type ) )
             box_particle_color_type = ColorType::SINGLE;
@@ -325,7 +337,7 @@ void Particles::render_ui()
                 selected_mesh_path.erase();
             imgui::SameLine();
         }
-        if ( imgui::Button( kl::format( "Selected Mesh Path: ", selected_mesh_path, "##SelectedMeshPath" ).c_str() ) )
+        if ( imgui::Button( kl::format( "Mesh Path: ", selected_mesh_path, "##SelectedMeshPath" ).c_str() ) )
         {
             if ( auto opt_file = kl::choose_file( false, { { "Mesh Files", ".obj" } } ) )
                 selected_mesh_path = *opt_file;
@@ -336,7 +348,7 @@ void Particles::render_ui()
                 selected_texture_path.erase();
             imgui::SameLine();
         }
-        if ( imgui::Button( kl::format( "Selected Texture Path", selected_texture_path, "##SelectedTexturePath" ).c_str() ) )
+        if ( imgui::Button( kl::format( "Texture Path: ", selected_texture_path, "##SelectedTexturePath" ).c_str() ) )
         {
             if ( auto opt_file = kl::choose_file( false ) )
             {
@@ -344,9 +356,9 @@ void Particles::render_ui()
                     selected_texture_path = *opt_file;
             }
         }
-        imgui::DragFloat3( "Mesh Scaling", &selected_mesh_scaling.x, 0.01f, -1e6f, 1e6f );
-        imgui::DragFloat3( "Mesh Offset", &selected_mesh_offset.x, 0.01f, -1e6f, 1e6f );
-        imgui::DragFloat( "Generation Precision", &generation_precision, 0.0001f, 0.0001f, 1e6f, "%.4f" );
+        drag_float3( "Mesh Scaling", selected_mesh_scaling, [] {} );
+        drag_float3( "Mesh Offset", selected_mesh_offset, [] {} );
+        drag_float( "Generation Precision", generation_precision, [] {} );
         imgui::Checkbox( "Generate As Wireframe", &use_wireframe );
         imgui::Checkbox( "Use Texture", &use_texture );
         imgui::Checkbox( "Generate Exploded", &generate_exploded );
@@ -369,19 +381,20 @@ void Particles::render_ui()
 
 void Particles::reload_selected_mesh()
 {
+    selected_mesh_triangles.clear();
     std::vector<kl::Vertex> vertices = kl::parse_obj_file( selected_mesh_path, true );
     for ( kl::Vertex& vertex : vertices )
     {
         vertex.position *= selected_mesh_scaling;
         vertex.position += selected_mesh_offset;
     }
-
     selected_mesh_triangles.resize( vertices.size() / 3 );
     memcpy( selected_mesh_triangles.data(), vertices.data(), selected_mesh_triangles.size() * sizeof( kl::Triangle ) );
 }
 
 void Particles::reload_selected_texture()
 {
+    selected_texture = {};
     selected_texture.load_from_file( selected_texture_path );
 }
 
@@ -528,4 +541,66 @@ void Particles::generate_particle_color( Particle& particle ) const
         particle.color = kl::random::gen_rgb( true );
         break;
     }
+}
+
+void drag_int( std::string_view const& text, int& value, std::function<void()> const& callback, float width )
+{
+    ImGuiStyle& style = imgui::GetStyle();
+    imgui::SetCursorPosY( imgui::GetCursorPosY() + style.FramePadding.y );
+    imgui::Text( text.data() );
+    imgui::SameLine();
+
+    imgui::SetCursorPosY( imgui::GetCursorPosY() - style.FramePadding.y );
+    imgui::SetNextItemWidth( width );
+    imgui::PushStyleColor( ImGuiCol_Text, I_COLOR );
+    if ( imgui::DragInt( kl::format( "##", text, "I" ).c_str(), &value, 0.01f ) )
+        callback();
+
+    imgui::PopStyleColor( 1 );
+}
+
+void drag_float( std::string_view const& text, float& value, std::function<void()> const& callback, float width )
+{
+    ImGuiStyle& style = imgui::GetStyle();
+    imgui::SetCursorPosY( imgui::GetCursorPosY() + style.FramePadding.y );
+    imgui::Text( text.data() );
+    imgui::SameLine();
+
+    imgui::SetCursorPosY( imgui::GetCursorPosY() - style.FramePadding.y );
+    imgui::SetNextItemWidth( width );
+    imgui::PushStyleColor( ImGuiCol_Text, F_COLOR );
+    if ( imgui::DragFloat( kl::format( "##", text, "F" ).c_str(), &value, 0.01f ) )
+        callback();
+
+    imgui::PopStyleColor( 1 );
+}
+
+void drag_float3( std::string_view const& text, kl::Float3& value, std::function<void()> const& callback, float width )
+{
+    ImGuiStyle& style = imgui::GetStyle();
+    imgui::SetCursorPosY( imgui::GetCursorPosY() + style.FramePadding.y );
+    imgui::Text( text.data() );
+    imgui::SameLine();
+
+    imgui::SetCursorPosY( imgui::GetCursorPosY() - style.FramePadding.y );
+    imgui::SetNextItemWidth( width );
+    imgui::PushStyleColor( ImGuiCol_Text, X_COLOR );
+    if ( imgui::DragFloat( kl::format( "##", text, "X" ).c_str(), &value.x, 0.01f ) )
+        callback();
+    imgui::SameLine();
+
+    imgui::SetCursorPosY( imgui::GetCursorPosY() - style.FramePadding.y );
+    imgui::SetNextItemWidth( width );
+    imgui::PushStyleColor( ImGuiCol_Text, Y_COLOR );
+    if ( imgui::DragFloat( kl::format( "##", text, "Y" ).c_str(), &value.y, 0.01f ) )
+        callback();
+    imgui::SameLine();
+
+    imgui::SetCursorPosY( imgui::GetCursorPosY() - style.FramePadding.y );
+    imgui::SetNextItemWidth( width );
+    imgui::PushStyleColor( ImGuiCol_Text, Z_COLOR );
+    if ( imgui::DragFloat( kl::format( "##", text, "Z" ).c_str(), &value.z, 0.01f ) )
+        callback();
+
+    imgui::PopStyleColor( 3 );
 }

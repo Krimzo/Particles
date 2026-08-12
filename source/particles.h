@@ -84,6 +84,7 @@ struct Particles
 private:
     void load_theme();
 
+    void handle_keybinds();
     void update_camera();
     void compute_physics();
     void render_particles();
@@ -100,3 +101,7 @@ private:
     void generate_particle_line( kl::Triangle const& triangle, kl::Float3 const& start, kl::Float3 const& end );
     void generate_particle_color( Particle& particle ) const;
 };
+
+void drag_int( std::string_view const& text, int& value, std::function<void()> const& callback, float width = 100.0f );
+void drag_float( std::string_view const& text, float& value, std::function<void()> const& callback, float width = 100.0f );
+void drag_float3( std::string_view const& text, kl::Float3& value, std::function<void()> const& callback, float width = 100.0f );
