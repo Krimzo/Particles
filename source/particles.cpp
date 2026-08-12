@@ -32,7 +32,7 @@ Particles::Particles()
     ImGui_ImplWin32_Init( window.ptr() );
     ImGui_ImplDX11_Init( gpu.device().get(), gpu.context().get() );
     imgui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-    setup_ui_colors();
+    load_theme();
 }
 
 Particles::~Particles()
@@ -54,89 +54,106 @@ bool Particles::process()
     return window.process();
 }
 
-void Particles::setup_ui_colors()
+void Particles::load_theme()
 {
-    imgui::StyleColorsDark();
+    const kl::Float4 special_color = kl::colors::WHITE;
+    const kl::Float4 alternate_color = kl::colors::BLACK;
     ImGuiStyle& style = imgui::GetStyle();
 
-    style.WindowPadding = ImVec2( 15.0f, 15.0f );
-    style.WindowRounding = 2.0f;
-    style.FramePadding = ImVec2( 5.0f, 5.0f );
-    style.FrameRounding = 2.0f;
-    style.ItemSpacing = ImVec2( 12.0f, 8.0f );
-    style.ItemInnerSpacing = ImVec2( 8.0f, 6.0f );
-    style.SelectableTextAlign = ImVec2( 0.5f, 0.5f );
-    style.IndentSpacing = 25.0f;
-    style.ScrollbarSize = 15.0f;
-    style.ScrollbarRounding = 9.0f;
-    style.GrabMinSize = 5.0f;
-    style.GrabRounding = 3.0f;
-    style.PopupBorderSize = 1.0f;
-    style.PopupRounding = 5.0f;
-    style.ChildBorderSize = 1.0f;
-    style.ChildRounding = 5.0f;
+    style.Colors[ImGuiCol_Text] = ImVec4( 1.00f, 1.00f, 1.00f, 1.00f );
+    style.Colors[ImGuiCol_TextDisabled] = ImVec4( 0.50f, 0.50f, 0.50f, 1.00f );
 
-    const ImVec4 colorNone = ImVec4( 0.0f, 0.0f, 0.0f, 0.0f );
-    const ImVec4 colorDark = ImVec4( 0.1f, 0.1f, 0.1f, 1.0f );
-    const ImVec4 colorMid = ImVec4( 0.2f, 0.2f, 0.2f, 1.0f );
-    const ImVec4 colorLight = ImVec4( 0.3f, 0.3f, 0.3f, 1.0f );
-    const ImVec4 colorSpec = ImVec4( 0.7f, 0.4f, 0.0f, 1.0f );
+    style.Colors[ImGuiCol_WindowBg] = ImVec4( 0.10f, 0.10f, 0.10f, 1.00f );
+    style.Colors[ImGuiCol_ChildBg] = ImVec4( 0.14f, 0.14f, 0.14f, 1.00f );
+    style.Colors[ImGuiCol_PopupBg] = ImVec4( 0.14f, 0.14f, 0.14f, 1.00f );
 
-    style.Colors[ImGuiCol_Text] = ImVec4( 0.95f, 0.95f, 0.95f, 1.0f );
-    style.Colors[ImGuiCol_TextDisabled] = colorLight;
-    style.Colors[ImGuiCol_WindowBg] = ImVec4( 0.077f, 0.077f, 0.077f, 1.0f );
-    style.Colors[ImGuiCol_ChildBg] = colorDark;
-    style.Colors[ImGuiCol_PopupBg] = colorDark;
-    style.Colors[ImGuiCol_Border] = colorLight;
-    style.Colors[ImGuiCol_BorderShadow] = colorMid;
-    style.Colors[ImGuiCol_FrameBg] = colorDark;
-    style.Colors[ImGuiCol_FrameBgHovered] = colorMid;
-    style.Colors[ImGuiCol_FrameBgActive] = colorLight;
-    style.Colors[ImGuiCol_TitleBg] = colorDark;
-    style.Colors[ImGuiCol_TitleBgActive] = colorDark;
-    style.Colors[ImGuiCol_TitleBgCollapsed] = colorDark;
-    style.Colors[ImGuiCol_MenuBarBg] = colorDark;
-    style.Colors[ImGuiCol_ScrollbarBg] = colorDark;
-    style.Colors[ImGuiCol_ScrollbarGrab] = colorLight;
-    style.Colors[ImGuiCol_ScrollbarGrabHovered] = colorMid;
-    style.Colors[ImGuiCol_ScrollbarGrabActive] = colorLight;
-    style.Colors[ImGuiCol_CheckMark] = colorSpec;
-    style.Colors[ImGuiCol_SliderGrab] = colorSpec;
-    style.Colors[ImGuiCol_SliderGrabActive] = colorSpec;
-    style.Colors[ImGuiCol_Button] = colorMid;
-    style.Colors[ImGuiCol_ButtonHovered] = colorLight;
-    style.Colors[ImGuiCol_ButtonActive] = colorLight;
-    style.Colors[ImGuiCol_Header] = colorMid;
-    style.Colors[ImGuiCol_HeaderHovered] = colorLight;
-    style.Colors[ImGuiCol_HeaderActive] = colorSpec;
-    style.Colors[ImGuiCol_Separator] = colorMid;
-    style.Colors[ImGuiCol_SeparatorHovered] = colorLight;
-    style.Colors[ImGuiCol_SeparatorActive] = colorSpec;
-    style.Colors[ImGuiCol_ResizeGrip] = colorMid;
-    style.Colors[ImGuiCol_ResizeGripHovered] = colorLight;
-    style.Colors[ImGuiCol_ResizeGripActive] = colorSpec;
-    style.Colors[ImGuiCol_Tab] = colorMid;
-    style.Colors[ImGuiCol_TabHovered] = colorSpec;
-    style.Colors[ImGuiCol_TabActive] = colorSpec;
-    style.Colors[ImGuiCol_TabUnfocused] = colorMid;
-    style.Colors[ImGuiCol_TabUnfocusedActive] = colorLight;
-    style.Colors[ImGuiCol_DockingPreview] = colorSpec;
-    style.Colors[ImGuiCol_DockingEmptyBg] = colorMid;
-    style.Colors[ImGuiCol_PlotLines] = colorSpec;
-    style.Colors[ImGuiCol_PlotLinesHovered] = colorLight;
-    style.Colors[ImGuiCol_PlotHistogram] = colorSpec;
-    style.Colors[ImGuiCol_PlotHistogramHovered] = colorLight;
-    style.Colors[ImGuiCol_TableHeaderBg] = colorMid;
-    style.Colors[ImGuiCol_TableBorderStrong] = colorDark;
-    style.Colors[ImGuiCol_TableBorderLight] = colorLight;
-    style.Colors[ImGuiCol_TableRowBg] = colorDark;
-    style.Colors[ImGuiCol_TableRowBgAlt] = colorMid;
-    style.Colors[ImGuiCol_TextSelectedBg] = colorLight;
-    style.Colors[ImGuiCol_DragDropTarget] = colorSpec;
-    style.Colors[ImGuiCol_NavHighlight] = colorSpec;
-    style.Colors[ImGuiCol_NavWindowingHighlight] = colorSpec;
-    style.Colors[ImGuiCol_NavWindowingDimBg] = colorMid;
-    style.Colors[ImGuiCol_ModalWindowDimBg] = colorMid;
+    style.Colors[ImGuiCol_Border] = ImVec4( 0.45f, 0.45f, 0.45f, 0.50f );
+    style.Colors[ImGuiCol_BorderShadow] = ImVec4( 0.00f, 0.00f, 0.00f, 0.00f );
+
+    style.Colors[ImGuiCol_FrameBg] = style.Colors[ImGuiCol_ChildBg];
+    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4( 0.30f, 0.30f, 0.30f, 1.00f );
+    style.Colors[ImGuiCol_FrameBgActive] = ImVec4( 0.60f, 0.60f, 0.60f, 0.40f );
+
+    style.Colors[ImGuiCol_TitleBg] = ImVec4( 0.08f, 0.08f, 0.08f, 1.00f );
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4( 0.08f, 0.08f, 0.08f, 1.00f );
+    style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4( 0.00f, 0.00f, 0.00f, 0.51f );
+
+    style.Colors[ImGuiCol_MenuBarBg] = ImVec4( 0.14f, 0.14f, 0.14f, 1.00f );
+
+    style.Colors[ImGuiCol_ScrollbarBg] = ImVec4( 0.02f, 0.02f, 0.02f, 0.53f );
+    style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4( 0.31f, 0.31f, 0.31f, 1.00f );
+    style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4( 0.41f, 0.41f, 0.41f, 1.00f );
+    style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4( 0.51f, 0.51f, 0.51f, 1.00f );
+
+    style.Colors[ImGuiCol_CheckMark] = (ImVec4&) special_color;
+    style.Colors[ImGuiCol_CheckboxSelectedBg] = ImVec4( 0.0f, 0.0f, 0.0f, 0.0f );
+
+    style.Colors[ImGuiCol_SliderGrab] = (ImVec4&) special_color;
+    style.Colors[ImGuiCol_SliderGrabActive] = (ImVec4&) special_color;
+
+    style.Colors[ImGuiCol_Button] = style.Colors[ImGuiCol_FrameBg];
+    style.Colors[ImGuiCol_ButtonHovered] = style.Colors[ImGuiCol_FrameBgHovered];
+    style.Colors[ImGuiCol_ButtonActive] = style.Colors[ImGuiCol_FrameBgActive];
+
+    style.Colors[ImGuiCol_Header] = ImVec4( 0.22f, 0.22f, 0.22f, 1.00f );
+    style.Colors[ImGuiCol_HeaderHovered] = ImVec4( 0.25f, 0.25f, 0.25f, 1.00f );
+    style.Colors[ImGuiCol_HeaderActive] = ImVec4( 0.67f, 0.67f, 0.67f, 0.39f );
+
+    style.Colors[ImGuiCol_Separator] = ImVec4( 0.45f, 0.45f, 0.45f, 0.50f );
+    style.Colors[ImGuiCol_SeparatorHovered] = ImVec4( 0.44f, 0.44f, 0.44f, 1.00f );
+    style.Colors[ImGuiCol_SeparatorActive] = (ImVec4&) special_color;
+
+    style.Colors[ImGuiCol_ResizeGrip] = ImVec4( 0.00f, 0.00f, 0.00f, 0.00f );
+    style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4( 0.30f, 0.30f, 0.30f, 0.67f );
+    style.Colors[ImGuiCol_ResizeGripActive] = (ImVec4&) special_color;
+
+    style.Colors[ImGuiCol_Tab] = ImVec4( 0.08f, 0.08f, 0.08f, 0.83f );
+    style.Colors[ImGuiCol_TabHovered] = ImVec4( 0.35f, 0.35f, 0.35f, 0.83f );
+    style.Colors[ImGuiCol_TabActive] = ImVec4( 0.23f, 0.23f, 0.23f, 1.00f );
+    style.Colors[ImGuiCol_TabUnfocused] = ImVec4( 0.08f, 0.08f, 0.08f, 1.00f );
+    style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4( 0.14f, 0.14f, 0.14f, 1.00f );
+    style.Colors[ImGuiCol_TabSelectedOverline] = (ImVec4&) special_color;
+
+    style.Colors[ImGuiCol_DockingPreview] = (ImVec4&) special_color;
+    style.Colors[ImGuiCol_DockingEmptyBg] = ImVec4( 0.20f, 0.20f, 0.20f, 1.00f );
+
+    style.Colors[ImGuiCol_PlotLines] = ImVec4( 0.61f, 0.61f, 0.61f, 1.00f );
+    style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4( 1.00f, 0.43f, 0.35f, 1.00f );
+    style.Colors[ImGuiCol_PlotHistogram] = ImVec4( 0.90f, 0.70f, 0.00f, 1.00f );
+    style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4( 1.00f, 0.60f, 0.00f, 1.00f );
+
+    style.Colors[ImGuiCol_TextSelectedBg] = ImVec4( 0.42f, 0.69f, 0.69f, 0.32f );
+
+    style.Colors[ImGuiCol_DragDropTarget] = (ImVec4&) special_color;
+
+    style.Colors[ImGuiCol_NavHighlight] = (ImVec4&) special_color;
+    style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4( 1.00f, 1.00f, 1.00f, 0.70f );
+    style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4( 0.80f, 0.80f, 0.80f, 0.20f );
+
+    style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4( 0.80f, 0.80f, 0.80f, 0.35f );
+
+    style.WindowPadding = ImVec2( 8.00f, 8.00f );
+    style.FramePadding = ImVec2( 5.00f, 2.00f );
+    style.CellPadding = ImVec2( 6.00f, 6.00f );
+    style.ItemSpacing = ImVec2( 6.00f, 6.00f );
+    style.ItemInnerSpacing = ImVec2( 6.00f, 6.00f );
+    style.TouchExtraPadding = ImVec2( 0.00f, 0.00f );
+    style.IndentSpacing = 25;
+    style.ScrollbarSize = 15;
+    style.GrabMinSize = 10;
+    style.WindowBorderSize = 1;
+    style.ChildBorderSize = 1;
+    style.PopupBorderSize = 1;
+    style.FrameBorderSize = 1;
+    style.TabBorderSize = 1;
+    style.WindowRounding = 7;
+    style.ChildRounding = 4;
+    style.FrameRounding = 3;
+    style.PopupRounding = 4;
+    style.ScrollbarRounding = 9;
+    style.GrabRounding = 3;
+    style.LogSliderDeadzone = 4;
+    style.TabRounding = 4;
 }
 
 void Particles::update_camera()
@@ -233,6 +250,11 @@ void Particles::render_particles()
 
 void Particles::render_ui()
 {
+    if ( window.keyboard.esc.pressed() )
+        window.close();
+    if ( window.keyboard.f11.pressed() )
+        gpu.set_fullscreen( !gpu.fullscreened() );
+
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     imgui::NewFrame();
@@ -241,74 +263,71 @@ void Particles::render_ui()
     {
         is_ui_hovered = imgui::GetIO().WantCaptureMouse;
 
-        // Mesh
-        imgui::Text( "Mesh" );
-        const size_t vertex_count = selected_mesh_triangles.size() * 3;
-        imgui::Text( kl::format( "Vertex count: ", vertex_count, " [", vertex_count * sizeof( kl::Vertex ) * 1e-6, " MB]" ).c_str() );
-
-        imgui::DragFloat( "Scaling", &selected_mesh_scaling, 0.1f, -1e6f, 1e6f );
-        imgui::DragFloat3( "Offset", &selected_mesh_offset.x, 0.1f, -1e6f, 1e6f );
-
-        if ( imgui::Button( "Reload##Mesh" ) )
-            reload_selected_mesh();
-        imgui::SameLine();
-        imgui::InputText( "##MeshInput", &selected_mesh_path );
-
-        // Texture
-        imgui::Separator();
-        imgui::Text( "Texture" );
-        const size_t image_size = (size_t) selected_texture.width() * selected_texture.height();
-        imgui::Text( kl::format( "Size: ", selected_texture.size(), " [", image_size * sizeof( kl::RGB ) * 1e-6, " MB]" ).c_str() );
-
-        if ( imgui::Button( "Reload##Texture" ) )
-            reload_selected_texture();
-        imgui::SameLine();
-        imgui::InputText( "##TextureInput", &selected_texture_path );
-
-        // Particles
-        imgui::Separator();
-        imgui::Text( "Particles" );
-
-        const size_t cpu_size = particles.size();
-        const size_t gpu_size = gpu.vertex_buffer_size( particle_buffer, sizeof( Particle ) );
-        imgui::Text( kl::format( "CPU count: ", cpu_size, " [", cpu_size * sizeof( Particle ) * 1e-6, " MB]" ).c_str() );
-        imgui::Text( kl::format( "GPU count: ", gpu_size, " [", gpu_size * sizeof( Particle ) * 1e-6, " MB]" ).c_str() );
-
-        imgui::DragFloat( "Precision", &generation_precision, 0.0001f, 0.0001f, 0.1f, "%.4f" );
-        imgui::Checkbox( "Wireframe", &use_wireframe );
-        imgui::Checkbox( "Exploded", &generate_exploded );
-
-        if ( imgui::Button( "Generate" ) )
-        {
-            generate_particles();
-            reload_particle_buffer();
-            return_home = false;
-        }
-
-        // Scene
-        imgui::Separator();
-        imgui::Text( "Scene" );
-
-        if ( imgui::DragFloat3( "Container Scale", &container_scale.x, 0.1f, 0.0f, 1e6f ) )
-            reload_container_mesh();
-        imgui::DragFloat( "Force Strength", &force_strength, 0.1f );
-        imgui::DragFloat( "Energy Retain", &energy_retain, 0.1f, 0.0f, 1.0f );
-        imgui::DragFloat( "Return Home Velocity", &return_home_velocity, 0.1f, 0.0f, 100.0f );
-        imgui::Checkbox( "Return Home", &return_home );
-
-        // Camera
-        imgui::Separator();
-        imgui::Text( "Camera" );
-
+        imgui::Text( kl::format( "Camera Rotations: ", std::fixed, camera_rotations ).c_str() );
+        imgui::Text( kl::format( "Camera Origin: ", std::fixed, camera.position ).c_str() );
+        imgui::Text( kl::format( "Camera Direction: ", std::fixed, camera.forward() ).c_str() );
         kl::Float3 background = camera.background;
-        if ( imgui::ColorEdit3( "Background", &background.x ) )
+        if ( imgui::ColorEdit3( "Camera Background", &background.x, ImGuiColorEditFlags_NoInputs ) )
         {
             camera.background = background;
             reload_container_mesh();
         }
 
-        imgui::Text( kl::format( "Origin: ", camera.position ).c_str() );
-        imgui::Text( kl::format( "Direction: ", camera.forward() ).c_str() );
+        imgui::Separator();
+
+        if ( imgui::DragFloat3( "Container Scale", &container_scale.x, 0.01f, 0.0f, 1e6f ) )
+            reload_container_mesh();
+        imgui::DragFloat( "Force Strength", &force_strength, 0.01f );
+        imgui::DragFloat( "Energy Retain", &energy_retain, 0.01f, 0.0f, 1.0f );
+        imgui::DragFloat( "Return Home Velocity", &return_home_velocity, 0.01f, 0.0f, 100.0f );
+        imgui::Checkbox( "Return Home", &return_home );
+
+        imgui::Separator();
+
+        const size_t cpu_size = particles.size();
+        const UINT gpu_size = gpu.vertex_buffer_size( particle_buffer, sizeof( Particle ) );
+        imgui::Text( kl::format( "CPU Particle Count: ", cpu_size, " [", cpu_size * sizeof( Particle ) * 1e-6, " MB]" ).c_str() );
+        imgui::Text( kl::format( "GPU Particle Count: ", gpu_size, " [", gpu_size * sizeof( Particle ) * 1e-6, " MB]" ).c_str() );
+        imgui::DragInt( "Box Particle Count", &box_particle_count );
+        if ( imgui::Button( "Generate Box Particles" ) )
+        {
+            generate_particle_box();
+            reload_particle_buffer();
+        }
+
+        imgui::Separator();
+
+        const size_t triangle_count = selected_mesh_triangles.size();
+        imgui::Text( kl::format( "Mesh Triangle Count: ", triangle_count, " [", triangle_count * sizeof( kl::Triangle ) * 1e-6, " MB]" ).c_str() );
+        const size_t image_size = (size_t) selected_texture.width() * selected_texture.height();
+        imgui::Text( kl::format( "Texture Resolution: ", selected_texture.size(), " [", image_size * sizeof( kl::RGB ) * 1e-6, " MB]" ).c_str() );
+        if ( imgui::Button( kl::format( "Selected Mesh Path: ", selected_mesh_path, "##SelectedMeshPath" ).c_str() ) )
+        {
+            if ( auto opt_file = kl::choose_file( false, { { "Mesh Files", ".obj" } } ) )
+                selected_mesh_path = *opt_file;
+        }
+        if ( imgui::Button( kl::format( "Selected Texture Path", selected_texture_path, "##SelectedTexturePath" ).c_str() ) )
+        {
+            if ( auto opt_file = kl::choose_file( false ) )
+            {
+                if ( kl::probe_content_type( *opt_file ).value_or( {} ).starts_with( "image" ) )
+                    selected_texture_path = *opt_file;
+            }
+        }
+        imgui::DragFloat3( "Mesh Scaling", &selected_mesh_scaling.x, 0.01f, -1e6f, 1e6f );
+        imgui::DragFloat3( "Mesh Offset", &selected_mesh_offset.x, 0.01f, -1e6f, 1e6f );
+        imgui::DragFloat( "Generation Precision", &generation_precision, 0.0001f, 0.0001f, 1e6f, "%.4f" );
+        imgui::Checkbox( "Generate As Wireframe", &use_wireframe );
+        imgui::Checkbox( "Generate Exploded", &generate_exploded );
+        imgui::BeginDisabled( selected_mesh_path.empty() );
+        if ( imgui::Button( "Generate Mesh Particles" ) )
+        {
+            reload_selected_mesh();
+            reload_selected_texture();
+            generate_particle_mesh();
+            reload_particle_buffer();
+        }
+        imgui::EndDisabled();
     }
     imgui::End();
 
@@ -374,53 +393,31 @@ void Particles::reload_container_mesh()
     container_mesh = gpu.create_buffer( &descriptor, &subresource_data );
 }
 
-void Particles::generate_particle_line( kl::Triangle const& triangle, kl::Float3 const& start, kl::Float3 const& end )
+void Particles::generate_particle_box()
 {
-    const float walk_distance = ( end - start ).length();
-    const int step_count = int( walk_distance / generation_precision );
-    const kl::Float3 walk_direction = kl::normalize( end - start );
-
-    for ( int i = 0; i <= step_count; i++ )
-    {
-        Particle& particle = particles.emplace_back();
-        particle.home = start + walk_direction * ( i * generation_precision );
-        particle.position = particle.home;
-
-        if ( generate_exploded )
-            particle.velocity = kl::random::gen_float3( -0.25f, 0.25f );
-
-        const kl::Float3 weights = triangle.weights( particle.position );
-        const float u = kl::Triangle::interpolate( weights, { triangle.a.uv.x, triangle.b.uv.x, triangle.c.uv.x } );
-        const float v = kl::Triangle::interpolate( weights, { triangle.a.uv.y, triangle.b.uv.y, triangle.c.uv.y } );
-        particle.color = selected_texture.sample( { u, 1 - v } );
-    }
+    particles.resize( box_particle_count );
+    std::for_each( std::execution::par, particles.begin(), particles.end(), [&]( auto& particle )
+        {
+            particle.home.x = kl::random::gen_float( -container_scale.x, container_scale.x );
+            particle.home.y = kl::random::gen_float( -container_scale.y, container_scale.y );
+            particle.home.z = kl::random::gen_float( -container_scale.z, container_scale.z );
+            particle.position = particle.home;
+            particle.velocity = kl::random::gen_float3( -0.1f, 0.1f );
+            particle.color.x = ( particle.home.x + container_scale.x ) / ( 2 * container_scale.x );
+            particle.color.y = ( particle.home.y + container_scale.y ) / ( 2 * container_scale.y );
+            particle.color.z = ( particle.home.z + container_scale.z ) / ( 2 * container_scale.z );
+        } );
 }
 
-void Particles::generate_particles()
+void Particles::generate_particle_mesh()
 {
-    if ( selected_mesh_triangles.empty() )
-    {
-        particles.resize( 1'000'000 );
-        std::for_each( std::execution::par, particles.begin(), particles.end(), [&]( auto& particle )
-            {
-                particle.home.x = kl::random::gen_float( -container_scale.x, container_scale.x );
-                particle.home.y = kl::random::gen_float( -container_scale.y, container_scale.y );
-                particle.home.z = kl::random::gen_float( -container_scale.z, container_scale.z );
-                particle.position = particle.home;
-                particle.velocity = kl::random::gen_float3( -0.1f, 0.1f );
-                particle.color.x = ( particle.home.x + container_scale.x ) / ( 2 * container_scale.x );
-                particle.color.y = ( particle.home.y + container_scale.y ) / ( 2 * container_scale.y );
-                particle.color.z = ( particle.home.z + container_scale.z ) / ( 2 * container_scale.z );
-            } );
-        return;
-    }
-
     particles.clear();
     particles.reserve( 1'000'000 );
 
     if ( use_wireframe )
     {
-        for ( kl::Triangle const& triangle : selected_mesh_triangles ) {
+        for ( kl::Triangle const& triangle : selected_mesh_triangles )
+        {
             generate_particle_line( triangle, triangle.a.position, triangle.b.position );
             generate_particle_line( triangle, triangle.b.position, triangle.c.position );
             generate_particle_line( triangle, triangle.c.position, triangle.a.position );
@@ -447,5 +444,27 @@ void Particles::generate_particles()
                 generate_particle_line( triangle, a_walk_point, b_walk_point );
             }
         }
+    }
+}
+
+void Particles::generate_particle_line( kl::Triangle const& triangle, kl::Float3 const& start, kl::Float3 const& end )
+{
+    const float walk_distance = ( end - start ).length();
+    const int step_count = int( walk_distance / generation_precision );
+    const kl::Float3 walk_direction = kl::normalize( end - start );
+
+    for ( int i = 0; i <= step_count; i++ )
+    {
+        Particle& particle = particles.emplace_back();
+        particle.home = start + walk_direction * ( i * generation_precision );
+        particle.position = particle.home;
+
+        if ( generate_exploded )
+            particle.velocity = kl::random::gen_float3( -0.25f, 0.25f );
+
+        const kl::Float3 weights = triangle.weights( particle.position );
+        const float u = kl::Triangle::interpolate( weights, { triangle.a.uv.x, triangle.b.uv.x, triangle.c.uv.x } );
+        const float v = kl::Triangle::interpolate( weights, { triangle.a.uv.y, triangle.b.uv.y, triangle.c.uv.y } );
+        particle.color = selected_texture.sample( { u, 1 - v } );
     }
 }

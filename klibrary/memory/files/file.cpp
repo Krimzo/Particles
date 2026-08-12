@@ -190,7 +190,7 @@ bool kl::write_file_string( std::wstring_view const& filepath, std::string_view 
     return true;
 }
 
-std::optional<std::string> kl::choose_file( bool save, std::vector<std::pair<std::string_view, std::string_view>> const& filters, int* out_index )
+std::optional<std::string> kl::choose_file( bool save, std::initializer_list<std::pair<std::string_view, std::string_view>> const& filters, int* out_index )
 {
     std::stringstream filter_buffer;
     for ( auto const& filter : filters )
@@ -217,7 +217,7 @@ std::optional<std::string> kl::choose_file( bool save, std::vector<std::pair<std
     return result;
 }
 
-std::optional<std::wstring> kl::wchoose_file( bool save, std::vector<std::pair<std::wstring_view, std::wstring_view>> const& filters, int* out_index )
+std::optional<std::wstring> kl::wchoose_file( bool save, std::initializer_list<std::pair<std::wstring_view, std::wstring_view>> const& filters, int* out_index )
 {
     std::wstringstream filter_buffer;
     for ( auto const& filter : filters )

@@ -20,7 +20,7 @@ struct Particles
     kl::Camera camera{};
 
     // Selected Mesh
-    float selected_mesh_scaling = 1.0f;
+    kl::Float3 selected_mesh_scaling{ 1.0f };
     kl::Float3 selected_mesh_offset;
     std::string selected_mesh_path;
     std::vector<kl::Triangle> selected_mesh_triangles;
@@ -47,16 +47,17 @@ struct Particles
     kl::Float2 start_camera_rotations;
     kl::Int2 start_mouse_position;
 
-    // Particle generation
-    float generation_precision = 0.005f;
-    bool use_wireframe = false;
-    bool generate_exploded = false;
-
     // Scene
     float force_strength = 1.0f;
     float energy_retain = 0.7f;
     bool return_home = false;
     float return_home_velocity = 0.5f;
+
+    // Particle generation
+    int box_particle_count = 1'000'000;
+    float generation_precision = 0.005f;
+    bool use_wireframe = false;
+    bool generate_exploded = false;
 
     // UI
     bool is_ui_hovered = false;
@@ -67,7 +68,7 @@ struct Particles
     bool process();
 
 private:
-    void setup_ui_colors();
+    void load_theme();
 
     void update_camera();
     void compute_physics();
@@ -79,6 +80,8 @@ private:
     void reload_particle_buffer();
     void reload_container_mesh();
 
+    void generate_particle_box();
+    void generate_particle_mesh();
+
     void generate_particle_line( kl::Triangle const& triangle, kl::Float3 const& start, kl::Float3 const& end );
-    void generate_particles();
 };

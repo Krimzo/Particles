@@ -1,1 +1,4 @@
 improve ui (file selection, section order, float drag precision)
+generate particle box add: toggle for random color, grayscale color, velocity limits etc.
+container scale, mesh scaling, mesh offset should be red green blue
+add keybinds for common functions like return home etc.
