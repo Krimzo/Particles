@@ -6,16 +6,16 @@ Supports **Texture** loading *(any image file)*
 ## Screenshots
 ### Model Particles
 <p align="center">
-  <img src="screen1.png">
+  <img src="screen1.png" width="800">
 </p>
 <p align="center">
-  <img src="screen2.gif">
+  <img src="screen2.gif" width="800">
 </p>
 
 ### Box Particles
 <p align="center">
-  <img src="screen3.png">
+  <img src="screen3.png" width="800">
 </p>
 <p align="center">
-  <img src="screen4.png">
+  <img src="screen4.png" width="800">
 </p>
