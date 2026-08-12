@@ -182,6 +182,7 @@ void Particles::compute_physics()
         float FORCE_STRENGTH;
         kl::Float3 CONTAINER_SCALE;
         float RETURN_HOME;
+        float RETURN_HOME_VELOCITY;
         float ENERGY_RETAIN;
         float ELAPSED_TIME;
         float DELTA_TIME;
@@ -192,6 +193,7 @@ void Particles::compute_physics()
     cb.ELAPSED_TIME = timer.elapsed();
     cb.DELTA_TIME = timer.delta();
     cb.RETURN_HOME = (float) return_home;
+    cb.RETURN_HOME_VELOCITY = return_home_velocity;
     cb.CONTAINER_SCALE = container_scale;
     cb.FORCE_STRENGTH = force_strength;
     cb.ENERGY_RETAIN = energy_retain;
@@ -287,11 +289,12 @@ void Particles::render_ui()
         imgui::Separator();
         imgui::Text( "Scene" );
 
-        if ( imgui::DragFloat3( "Container scale", &container_scale.x, 0.1f, 0.0f, 1e6f ) )
+        if ( imgui::DragFloat3( "Container Scale", &container_scale.x, 0.1f, 0.0f, 1e6f ) )
             reload_container_mesh();
-        imgui::DragFloat( "Force strength", &force_strength, 0.1f );
-        imgui::DragFloat( "Energy retain", &energy_retain, 0.1f, 0.0f, 1.0f );
-        imgui::Checkbox( "Return home", &return_home );
+        imgui::DragFloat( "Force Strength", &force_strength, 0.1f );
+        imgui::DragFloat( "Energy Retain", &energy_retain, 0.1f, 0.0f, 1.0f );
+        imgui::DragFloat( "Return Home Velocity", &return_home_velocity, 0.1f, 0.0f, 100.0f );
+        imgui::Checkbox( "Return Home", &return_home );
 
         // Camera
         imgui::Separator();

@@ -1,3 +1,1 @@
 improve ui (file selection, section order, float drag precision)
-rename classes/structs with capital letter
-refactor shaders

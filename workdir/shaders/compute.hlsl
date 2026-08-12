@@ -6,12 +6,15 @@ struct Particle
     float3 color;
 };
 
+static const float AT_HOME_BIAS = 1e-3f;
+
 float3 FORCE_RAY_ORIGIN;
 float USE_RAY_FORCE;
 float3 FORCE_RAY_DIRECTION;
 float FORCE_STRENGTH;
 float3 CONTAINER_SCALE;
 float RETURN_HOME;
+float RETURN_HOME_VELOCITY;
 float ENERGY_RETAIN;
 float ELAPSED_TIME;
 float DELTA_TIME;
@@ -28,7 +31,11 @@ void c_shader(uint3 thread_id : SV_DispatchThreadID)
     Particle particle = particles[thread_id.x];
     
     if (RETURN_HOME)
-        particle.velocity = particle.home - particle.position;
+    {
+        particle.velocity = normalize(particle.home - particle.position) * RETURN_HOME_VELOCITY;
+        if (distance(particle.position, particle.home) <= AT_HOME_BIAS)
+            particle.velocity = 0.0f;
+    }
     
     if (USE_RAY_FORCE)
     {

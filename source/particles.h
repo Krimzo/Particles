@@ -56,6 +56,7 @@ struct Particles
     float force_strength = 1.0f;
     float energy_retain = 0.7f;
     bool return_home = false;
+    float return_home_velocity = 0.5f;
 
     // UI
     bool is_ui_hovered = false;
