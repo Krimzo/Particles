@@ -36,7 +36,11 @@ Particles::Particles()
     imgui::CreateContext();
     ImGui_ImplWin32_Init( window.ptr() );
     ImGui_ImplDX11_Init( gpu.device().get(), gpu.context().get() );
-    imgui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+    auto& imgui_io = imgui::GetIO();
+    imgui_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    imgui_io.IniFilename = nullptr;
+
     load_theme();
 }
 
