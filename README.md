@@ -1,17 +1,21 @@
 ## About
-3D particle simulation using DirectX  
-Supports MODEL loading *(.obj files)*  
-Supports TEXTURE loading *(any image file)*
+3D particle simulation using Direct3D  
+Supports **Model** loading *(.obj files)*  
+Supports **Texture** loading *(any image file)*
 
 ## Screenshots
-### Default cube
-![](screens/default_cube.png)
+### Model Particles
+<p align="center">
+  <img src="screen1.png" width="800">
+</p>
+<p align="center">
+  <img src="screen2.gif" width="800">
+</p>
 
-### Loaded model (SOLID)
-![](screens/loaded_model.png)
-
-### Loaded model (WIREFRAME)
-![](screens/loaded_model_wireframe.png)
-
-### Exploded model
-![](screens/exploded_model.png)
+### Box Particles
+<p align="center">
+  <img src="screen3.png" width="800">
+</p>
+<p align="center">
+  <img src="screen4.png" width="800">
+</p>
