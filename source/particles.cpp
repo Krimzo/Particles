@@ -23,9 +23,9 @@ Particles::Particles()
 
     reload_container_mesh();
 
-    camera.speed = 3.0f;
-    camera.sensitivity = 0.01f;
-    camera.background = kl::RGB{ 50, 50, 50 };
+    camera.speed = 5.0f;       // camera distance
+    camera.sensitivity = 0.5f; // deg/px
+    camera.background = kl::RGB{ 40, 40, 40 };
     update_camera();
 
     imgui::CreateContext();
@@ -141,73 +141,67 @@ void Particles::setup_ui_colors()
 
 void Particles::update_camera()
 {
-    static int last_delta = 0;
-    const int scroll_delta = window.mouse.scroll();
-    if ( scroll_delta != last_delta )
-    {
-        const int new_delta = ( last_delta - scroll_delta );
-        last_delta = scroll_delta;
+    static constexpr float VERTICAL_LIMIT = 85.0f;
 
-        camera.speed += new_delta * 0.25f;
-        camera.speed = kl::max( camera.speed, 0.1f );
-    }
+    camera.speed -= window.mouse.scroll();
 
     if ( window.mouse.right.pressed() )
     {
         start_mouse_position = window.mouse.position();
-        start_mouse_rotations = total_mouse_rotations;
+        start_camera_rotations = camera_rotations;
     }
-    else if ( window.mouse.right )
+
+    if ( window.mouse.right )
     {
-        camera.set_forward( -camera.position );
-        camera.position = ( camera.forward() * -camera.speed );
+        const kl::Int2 mouse_delta = window.mouse.position() - start_mouse_position;
+        camera_rotations.x = start_camera_rotations.x + mouse_delta.x * camera.sensitivity;
+        camera_rotations.y = kl::clamp( start_camera_rotations.y + mouse_delta.y * camera.sensitivity, -VERTICAL_LIMIT, VERTICAL_LIMIT );
+
+        if ( camera_rotations.y == -VERTICAL_LIMIT || camera_rotations.y == VERTICAL_LIMIT )
+        {
+            start_mouse_position.y = window.mouse.position().y;
+            start_camera_rotations.y = camera_rotations.y;
+        }
     }
 
-    const kl::Int2 delta_mouse = ( window.mouse.position() - start_mouse_position );
-    start_mouse_position = window.mouse.position();
-
-    total_mouse_rotations.x = start_mouse_rotations.x + ( delta_mouse.x * camera.sensitivity );
-    total_mouse_rotations.y = start_mouse_rotations.y + ( delta_mouse.y * camera.sensitivity );
-    total_mouse_rotations.y = kl::clamp( total_mouse_rotations.y, -1.5f, 1.5f );
-    start_mouse_rotations = total_mouse_rotations;
-
-    camera.position.x = kl::sin( total_mouse_rotations.x );
-    camera.position.y = kl::tan( total_mouse_rotations.y );
-    camera.position.z = kl::cos( total_mouse_rotations.x );
+    camera.position = { 0.0f, 0.0f, -camera.speed };
+    camera.position = kl::rotate( camera.position, { 1.0f, 0.0f, 0.0f }, camera_rotations.y );
+    camera.position = kl::rotate( camera.position, { 0.0f, 1.0f, 0.0f }, camera_rotations.x );
+    camera.set_forward( -camera.position );
 }
 
 void Particles::compute_physics()
 {
     struct alignas( 16 ) CB
     {
-        uint32_t particle_count = 0;
-        kl::Float3 time_info;           // (elapsed_t, delta_t, none)
-        kl::Float4 force_ray_origin;    // (origin, use_force?)
-        kl::Float4 force_ray_direction; // (direction, return_home?)
-        kl::Float4 container_scale;     // (scale, none)
-        kl::Float4 energy_info;         // (force_strength, energy_retain, none, none)
+        UINT PARTICLE_COUNT;
+        kl::Float3 TIME_INFO;           // (elapsed_t, delta_t, none)
+        kl::Float4 FORCE_RAY_ORIGIN;    // (origin, use_force?)
+        kl::Float4 FORCE_RAY_DIRECTION; // (direction, return_home?)
+        kl::Float4 CONTAINER_SCALE;     // (scale, none)
+        kl::Float4 ENERGY_INFO;         // (force_strength, energy_retain, none, none)
     } cb = {};
 
-    cb.particle_count = gpu.vertex_buffer_size( particle_buffer, sizeof( Particle ) );
-    cb.time_info = { timer.elapsed(), timer.delta(), 0.0f };
+    cb.PARTICLE_COUNT = gpu.vertex_buffer_size( particle_buffer, sizeof( Particle ) );
+    cb.TIME_INFO = { timer.elapsed(), timer.delta(), 0.0f };
 
     if ( window.mouse.left && !is_window_hovered )
     {
         const kl::Float2 ndc = window.mouse.ndc_pos();
         const kl::Ray ray = { camera.position, kl::inverse( camera.matrix() ), ndc };
-        cb.force_ray_origin = { ray.origin, 1.0f };
-        cb.force_ray_direction = { ray.direction(), 0.0f };
+        cb.FORCE_RAY_ORIGIN = { ray.origin, 1.0f };
+        cb.FORCE_RAY_DIRECTION = { ray.direction(), 0.0f };
     }
 
-    cb.force_ray_direction.w = (float) return_home;
-    cb.container_scale = { container_scale, 0.0f };
-    cb.energy_info = { force_strength, energy_retain, 0.0f, 0.0f };
+    cb.FORCE_RAY_DIRECTION.w = (float) return_home;
+    cb.CONTAINER_SCALE = { container_scale, 0.0f };
+    cb.ENERGY_INFO = { force_strength, energy_retain, 0.0f, 0.0f };
 
     gpu.bind_compute_shader( compute_shader.shader );
     compute_shader.upload( cb );
 
     gpu.bind_access_view_for_compute_shader( particle_buffer_view, 0 );
-    gpu.dispatch_compute_shader( cb.particle_count / 1024 + 1, 1, 1 );
+    gpu.dispatch_compute_shader( cb.PARTICLE_COUNT / 1024 + 1, 1, 1 );
     gpu.unbind_access_view_for_compute_shader( 0 );
 }
 
@@ -215,7 +209,7 @@ void Particles::render_particles()
 {
     struct alignas( 16 ) CB
     {
-        kl::Float4x4 VP{};
+        kl::Float4x4 VP;
     } cb = {};
 
     cb.VP = camera.matrix();
@@ -232,7 +226,6 @@ void Particles::render_ui()
     ImGui_ImplDX11_NewFrame();
     ImGui_ImplWin32_NewFrame();
     imgui::NewFrame();
-    imgui::DockSpaceOverViewport();
 
     if ( imgui::Begin( "Scene" ) )
     {
@@ -279,7 +272,6 @@ void Particles::render_ui()
         {
             generate_particles();
             reload_particle_buffer();
-            particle_buffer_view = gpu.create_access_view( particle_buffer, nullptr );
             return_home = false;
         }
 
@@ -344,12 +336,12 @@ void Particles::reload_particle_buffer()
     subresource_data.pSysMem = particles.data();
 
     particle_buffer = gpu.create_buffer( &descriptor, &subresource_data );
+    particle_buffer_view = gpu.create_access_view( particle_buffer, nullptr );
 }
 
 void Particles::reload_container_mesh()
 {
-    std::vector<Particle> particles
-    {
+    const std::vector<Particle> particles = {
         { {}, { -container_scale.x, -container_scale.y, -container_scale.z }, {}, camera.background },
         { {}, { container_scale.x, -container_scale.y, -container_scale.z }, {}, kl::RGB( camera.background.r, 0, 0 ).inverted() },
 

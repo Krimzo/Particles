@@ -1,5 +1,4 @@
-// Compute shader
-struct particle
+struct Particle
 {
     float3 home;
     float3 position;
@@ -7,69 +6,52 @@ struct particle
     float3 color;
 };
 
-cbuffer cs_cb : register(b0)
-{
-    uint particle_count;
-    float3 time_info; // (elapsed_t, delta_t, none)
-    
-    float4 force_ray_origin;    // (origin, use_force?)
-    float4 force_ray_direction; // (direction, return_home?)
-    
-    float4 container_scale; // (scale, none)
-    float4 energy_info;     // (force_strength, energy_retain, none, none)
-};
+uint PARTICLE_COUNT;
+float3 TIME_INFO;           // (elapsed_t, delta_t, none)
+float4 FORCE_RAY_ORIGIN;    // (origin, use_force?)
+float4 FORCE_RAY_DIRECTION; // (direction, return_home?)
+float4 CONTAINER_SCALE;     // (scale, none)
+float4 ENERGY_INFO;         // (force_strength, energy_retain, none, none)
 
-RWStructuredBuffer<particle> particles : register(u0);
-
-particle update_particle(particle particle);
+RWStructuredBuffer<Particle> particles : register(u0);
 
 [numthreads(1024, 1, 1)]
 void c_shader(uint3 thread_id : SV_DispatchThreadID)
 {
-    if (thread_id.x < particle_count) {
-        particles[thread_id.x] = update_particle(particles[thread_id.x]);
-    }
-}
-
-particle update_particle(particle particle)
-{
-    // Return home
-    if (force_ray_direction.w) {
-        particle.velocity = (particle.home - particle.position);
-    }
+    if (thread_id.x >= PARTICLE_COUNT)
+        return;
     
-    // Force
-    if (force_ray_origin.w) {
-        const float distance_t = dot(particle.position - force_ray_origin.xyz, force_ray_direction.xyz);
-        const float3 closest_position = force_ray_origin.xyz + force_ray_direction.xyz * distance_t;
-        
+    Particle particle = particles[thread_id.x];
+    
+    if (FORCE_RAY_DIRECTION.w)
+        particle.velocity = (particle.home - particle.position);
+    
+    if (FORCE_RAY_ORIGIN.w)
+    {
+        const float distance_t = dot(particle.position - FORCE_RAY_ORIGIN.xyz, FORCE_RAY_DIRECTION.xyz);
+        const float3 closest_position = FORCE_RAY_ORIGIN.xyz + FORCE_RAY_DIRECTION.xyz * distance_t;
         float3 acceleration = particle.position - closest_position;
         float force_distance = length(acceleration);
-        
         acceleration /= (force_distance * force_distance);
-        acceleration *= energy_info.x;
-        
-        particle.velocity += (acceleration * time_info.y);
+        acceleration *= ENERGY_INFO.x;
+        particle.velocity += (acceleration * TIME_INFO.y);
     }
     
-    // Velocity
-    particle.position += (particle.velocity * time_info.y);
+    particle.position += (particle.velocity * TIME_INFO.y);
     
-    // Collision
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         float3 plane_normal = 0;
-        plane_normal[i] = 1;
-        
-        if (particle.position[i] < -container_scale[i]) {
-            particle.position[i] = -(container_scale[i] - 1e-3f);
-            particle.velocity = reflect(particle.velocity, plane_normal) * energy_info.y;
+        plane_normal[i] = 1.0f;
+        if (particle.position[i] < -CONTAINER_SCALE[i])
+        {
+            particle.position[i] = 1e-3f - CONTAINER_SCALE[i];
+            particle.velocity = reflect(particle.velocity, plane_normal) * ENERGY_INFO.y;
         }
-        
-        if (particle.position[i] > container_scale[i]) {
-            particle.position[i] = (container_scale[i] - 1e-3f);
-            particle.velocity = reflect(particle.velocity, -plane_normal) * energy_info.y;
+        if (particle.position[i] > CONTAINER_SCALE[i])
+        {
+            particle.position[i] = CONTAINER_SCALE[i] - 1e-3f;
+            particle.velocity = reflect(particle.velocity, -plane_normal) * ENERGY_INFO.y;
         }
     }
-    
-    return particle;
 }

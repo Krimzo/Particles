@@ -5,10 +5,10 @@
 
 struct Particle
 {
-    kl::Float3 home{};
-    kl::Float3 position{};
-    kl::Float3 velocity{};
-    kl::Float3 color{};
+    kl::Float3 home;
+    kl::Float3 position;
+    kl::Float3 velocity;
+    kl::Float3 color;
 };
 
 struct Particles
@@ -43,9 +43,9 @@ struct Particles
     kl::ComputeShader compute_shader;
 
     // Camera movement
+    kl::Float2 camera_rotations;
+    kl::Float2 start_camera_rotations;
     kl::Int2 start_mouse_position;
-    kl::Float2 start_mouse_rotations;
-    kl::Float2 total_mouse_rotations;
 
     // Particle generation
     float generation_precision = 0.005f;
