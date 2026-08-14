@@ -20,7 +20,7 @@ float ELAPSED_TIME;
 float DELTA_TIME;
 uint PARTICLE_COUNT;
 
-RWStructuredBuffer<Particle> particles : register(u0);
+RWStructuredBuffer<Particle> PARTICLES : register(u0);
 
 [numthreads(1024, 1, 1)]
 void c_shader(uint3 thread_id : SV_DispatchThreadID)
@@ -28,7 +28,7 @@ void c_shader(uint3 thread_id : SV_DispatchThreadID)
     if (thread_id.x >= PARTICLE_COUNT)
         return;
     
-    Particle particle = particles[thread_id.x];
+    Particle particle = PARTICLES[thread_id.x];
     
     if (RETURN_HOME)
     {
@@ -70,5 +70,5 @@ void c_shader(uint3 thread_id : SV_DispatchThreadID)
         }
     }
     
-    particles[thread_id.x] = particle;
+    PARTICLES[thread_id.x] = particle;
 }
