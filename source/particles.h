@@ -2,13 +2,12 @@
 
 #include "klibrary.h"
 
-
 struct Particle
 {
-    kl::Float3 home;
-    kl::Float3 position;
-    kl::Float3 velocity;
-    kl::Float3 color;
+    float3 home;
+    float3 position;
+    float3 velocity;
+    float3 color;
 };
 
 enum struct ColorType
@@ -22,14 +21,14 @@ enum struct ColorType
 struct Particles
 {
     // System
-    kl::Window window{ "Particles" };
-    kl::GPU gpu{ window.ptr() };
+    kl::Window window{"Particles"};
+    kl::GPU gpu{window.ptr()};
     kl::Timer timer{};
     kl::Camera camera{};
 
     // Selected Mesh
-    kl::Float3 selected_mesh_scaling{ 1.0f };
-    kl::Float3 selected_mesh_offset;
+    float3 selected_mesh_scaling{1.0f};
+    float3 selected_mesh_offset;
     std::string selected_mesh_path;
     std::vector<kl::Triangle> selected_mesh_triangles;
 
@@ -39,7 +38,7 @@ struct Particles
 
     // Container
     kl::dx::Buffer container_mesh;
-    kl::Float3 container_scale{ 1.0f };
+    float3 container_scale{1.0f};
 
     // Particles
     std::vector<Particle> particles;
@@ -51,9 +50,9 @@ struct Particles
     kl::ComputeShader compute_shader;
 
     // Camera Movement
-    kl::Float2 camera_rotations;
-    kl::Float2 start_camera_rotations;
-    kl::Int2 start_mouse_position;
+    float2 camera_rotations;
+    float2 start_camera_rotations;
+    int2 start_mouse_position;
 
     // Scene
     float force_strength = 1.0f;
@@ -65,7 +64,7 @@ struct Particles
     int box_particle_count = 1'000'000;
     float box_particle_velocity_limit = 0.1f;
     ColorType box_particle_color_type = ColorType::POSITION;
-    kl::Float3 box_particle_color_single = kl::colors::WHITE;
+    float3 box_particle_color_single = kl::colors::WHITE;
 
     // Particle Mesh
     float generation_precision = 0.005f;
@@ -81,7 +80,7 @@ struct Particles
 
     bool process();
 
-private:
+  private:
     void load_theme();
 
     void handle_keybinds();
@@ -98,10 +97,12 @@ private:
     void generate_particle_box();
     void generate_particle_mesh();
 
-    void generate_particle_line( kl::Triangle const& triangle, kl::Float3 const& start, kl::Float3 const& end );
-    void generate_particle_color( Particle& particle ) const;
+    void generate_particle_line(kl::Triangle const& triangle, float3 const& start, float3 const& end);
+    void generate_particle_color(Particle& particle) const;
 };
 
-void drag_int( std::string_view const& text, int& value, std::function<void()> const& callback, float width = 100.0f );
-void drag_float( std::string_view const& text, float& value, std::function<void()> const& callback, float width = 100.0f );
-void drag_float3( std::string_view const& text, kl::Float3& value, std::function<void()> const& callback, float width = 100.0f );
+void drag_int(std::string_view const& text, int& value, std::function<void()> const& callback, float width = 100.0f);
+void drag_float(std::string_view const& text, float& value, std::function<void()> const& callback,
+                float width = 100.0f);
+void drag_float3(std::string_view const& text, float3& value, std::function<void()> const& callback,
+                 float width = 100.0f);
