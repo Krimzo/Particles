@@ -14,11 +14,10 @@ add_library(imguilib
 target_include_directories(imguilib PUBLIC imgui)
 
 add_subdirectory(klibrary)
-target_include_directories(klibrarylib PUBLIC imgui)
+target_link_libraries(klibrarylib PUBLIC imguilib)
 
 file(GLOB_RECURSE particles_sources CONFIGURE_DEPENDS source/*.cpp)
 add_executable(particles ${particles_sources})
-target_link_libraries(particles PUBLIC imguilib)
 target_link_libraries(particles PUBLIC klibrarylib)
 target_include_directories(particles PUBLIC source)
 set_target_properties(particles PROPERTIES
